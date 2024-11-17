@@ -1,6 +1,5 @@
 package org.jgp2425.unit.finalactivity_v1;
 
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,13 +10,9 @@ import javafx.stage.Stage;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.query.Query;
 import org.jgp2425.unit.finalactivity_v1.entities.Sellers;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Locale;
 
 public class SellerLoginController {
     @FXML

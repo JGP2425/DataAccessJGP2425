@@ -7,9 +7,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.jgp2425.unit.finalactivity_v1.entities.Sellers;
-import org.w3c.dom.Text;
-
-import java.sql.PseudoColumnUsage;
 
 public class SellerDataController {
     @FXML

@@ -4,14 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.query.Query;
-import org.jgp2425.unit.finalactivity_v1.entities.Sellers;
-
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 
 public class MainApplication extends Application {

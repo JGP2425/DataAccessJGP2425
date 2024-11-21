@@ -1,5 +1,9 @@
 package org.jgp2425.unit.finalactivity_v1.entities;
 
+import org.hibernate.Session;
+import org.hibernate.procedure.internal.Util;
+import org.jgp2425.unit.finalactivity_v1.Utils;
+
 import javax.persistence.*;
 
 @Entity
@@ -94,5 +98,13 @@ public class Sellers {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Sellers getSellerByCif(Session session, String cif) {
+        return session.createQuery("from Sellers where cif= :cif", Sellers.class).setParameter("cif", cif).uniqueResult();
+    }
+
+    public boolean validateSeller(String password) {
+        return Utils.validatePassword(password, this.password);
     }
 }

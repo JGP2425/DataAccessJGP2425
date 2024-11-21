@@ -8,6 +8,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.jgp2425.unit.finalactivity_v1.entities.Sellers;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SellerDataController {
     @FXML
     private TextField cifField;
@@ -26,6 +29,9 @@ public class SellerDataController {
 
     @FXML
     private TextField pwdField;
+
+    @FXML
+    private TextField confirmPwdField;
 
     @FXML
     private Label errorLabel;
@@ -50,11 +56,16 @@ public class SellerDataController {
         String bname = bnameField.getText();
         String phone = phoneField.getText();
         String pwd = pwdField.getText();
+        String confirmPwd = confirmPwdField.getText();
         String email = emailField.getText();
         boolean isOk = true;
 
-        //Validations
-        if (name.isEmpty() || bname.isEmpty() || phone.isEmpty() || pwd.isEmpty()) {
+        //Regex for email and phone validation
+        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        String phoneRegex = "^\\d{3}-\\d{3}-\\d{3}$";
+
+        //Empty validations and length validations
+        if (name.isEmpty() || bname.isEmpty() || phone.isEmpty() || pwd.isEmpty() || confirmPwd.isEmpty()) {
             errorLabel.setVisible(true);
             sucessfulLabel.setVisible(false);
             errorLabel.setText("All necessary fields need to be filled");
@@ -75,7 +86,13 @@ public class SellerDataController {
         else if (phone.length() > 15) {
             errorLabel.setVisible(true);
             sucessfulLabel.setVisible(false);
-            errorLabel.setText("Phone cannot be more than 15 characters.");
+            errorLabel.setText("Phone cannot be more than 15 characters or have a invalid format.");
+            isOk = false;
+        }
+        else if (!Pattern.matches(phoneRegex, phone)) {
+            errorLabel.setVisible(true);
+            sucessfulLabel.setVisible(false);
+            errorLabel.setText("Phone have an invalid format, the valid format is XXX-XXX-XXX.");
             isOk = false;
         }
         else if (email.length() > 90) {
@@ -84,14 +101,32 @@ public class SellerDataController {
             errorLabel.setText("Email cannot be more than 90 characters.");
             isOk = false;
         }
+        else if (!Pattern.matches(emailRegex, email)) {
+            errorLabel.setVisible(true);
+            sucessfulLabel.setVisible(false);
+            errorLabel.setText("Email have a invalid format.");
+            isOk = false;
+        }
         else if (pwd.length() > 50) {
             errorLabel.setVisible(true);
             sucessfulLabel.setVisible(false);
             errorLabel.setText("Password cannot be more than 50 characters.");
             isOk = false;
         }
+        else if (confirmPwd.length() > 50) {
+            errorLabel.setVisible(true);
+            sucessfulLabel.setVisible(false);
+            errorLabel.setText("Password cannot be more than 50 characters.");
+            isOk = false;
+        }
+        else if (!confirmPwd.equals(pwd)) {
+            errorLabel.setVisible(true);
+            sucessfulLabel.setVisible(false);
+            errorLabel.setText("Passwords needs to be identical.");
+            isOk = false;
+        }
 
-        return  isOk;
+        return isOk;
     }
 
     public void updateSeller() {
@@ -114,46 +149,48 @@ public class SellerDataController {
                 session = sessionFactory.openSession();
 
                 //Retrieve the seller provided by the user
-                Sellers seller = session.createQuery("from Sellers where cif= :cif", Sellers.class).setParameter("cif", cifField.getText()).uniqueResult();
+                Sellers seller = new Sellers().getSellerByCif(session, cifField.getText());
 
-                //Generate MD5 Password to the new password
-                String newMD5pwd = "";
-                if (!seller.getPlainPassword().equals(pwd)) {
-                    newMD5pwd = Utils.MD5Converter(pwd).toUpperCase();
-                }
+                if (seller != null) {
+                    //Generate MD5 Password to the new password
+                    String newMD5pwd = "";
+                    if (!seller.getPlainPassword().equals(pwd)) {
+                        newMD5pwd = Utils.MD5Converter(pwd).toUpperCase();
+                    }
 
-                //Start the transaction
-                session.beginTransaction();
+                    //Start the transaction
+                    session.beginTransaction();
 
-                //Setting all the properties
-                if (!seller.getName().equals(name))
-                    seller.setName(name);
+                    //Setting all the properties
+                    if (!seller.getName().equals(name))
+                        seller.setName(name);
 
-                if (!seller.getBusinessName().equals(bname))
-                    seller.setBusinessName(bname);
+                    if (!seller.getBusinessName().equals(bname))
+                        seller.setBusinessName(bname);
 
-                if (!seller.getPhone().equals(phone))
-                    seller.setPhone(phone);
+                    if (!seller.getPhone().equals(phone))
+                        seller.setPhone(phone);
 
-                if (!seller.getPlainPassword().equals(pwd))
-                    seller.setPlainPassword(pwd);
+                    if (!seller.getPlainPassword().equals(pwd))
+                        seller.setPlainPassword(pwd);
 
-                if (seller.getEmail() != null) {
-                    if (!seller.getEmail().equals(email))
+                    if (seller.getEmail() != null) {
+                        if (!seller.getEmail().equals(email))
+                            seller.setEmail(email);
+                    }
+                    else
                         seller.setEmail(email);
+
+                    if (!newMD5pwd.isEmpty())
+                        seller.setPassword(newMD5pwd);
+
+                    //Commit the transaction
+                    session.getTransaction().commit();
+
+                    //Feedback to the user.
+                    errorLabel.setVisible(false);
+                    sucessfulLabel.setVisible(true);
                 }
-                else
-                    seller.setEmail(email);
-
-                if (!newMD5pwd.isEmpty())
-                    seller.setPassword(newMD5pwd);
-
-                //Commit the transaction
-                session.getTransaction().commit();
-
-                //Feedback to the user.
-                errorLabel.setVisible(false);
-                sucessfulLabel.setVisible(true);
             }
             catch (Exception e)
             {

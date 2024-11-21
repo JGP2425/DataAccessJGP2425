@@ -2,6 +2,9 @@ package org.jgp2425.unit.finalactivity_v1;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Utils {
     public static String MD5Converter (String password) {
@@ -29,5 +32,14 @@ public class Utils {
     public static boolean validatePassword (String plainPassword, String MD5Hash) {
         String hashedInput = MD5Converter(plainPassword);
         return hashedInput.equalsIgnoreCase(MD5Hash);
+    }
+
+    public static boolean isDatabaseAvailable() {
+        try (Connection connection = DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/onlinemarket", "postgres", "1234")) {
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 }

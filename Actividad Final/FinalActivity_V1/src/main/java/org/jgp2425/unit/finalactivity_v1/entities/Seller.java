@@ -1,14 +1,17 @@
 package org.jgp2425.unit.finalactivity_v1.entities;
 
 import org.hibernate.Session;
-import org.hibernate.procedure.internal.Util;
 import org.jgp2425.unit.finalactivity_v1.Utils;
 
 import javax.persistence.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "sellers")
-public class Sellers {
+public class Seller {
 
     @Id
     @Column(name = "seller_id")
@@ -26,7 +29,7 @@ public class Sellers {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = true)
     private String email;
 
     @Column(name = "plain_password")
@@ -34,6 +37,9 @@ public class Sellers {
 
     @Column(name = "password")
     private String password;
+
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<SellerProduct> sellerProducts;
 
     // Getters y setters
     public int getSellerId() {
@@ -100,8 +106,21 @@ public class Sellers {
         this.password = password;
     }
 
-    public Sellers getSellerByCif(Session session, String cif) {
-        return session.createQuery("from Sellers where cif= :cif", Sellers.class).setParameter("cif", cif).uniqueResult();
+    public ArrayList<Product> getSellerProducts() {
+        ArrayList<Product> products = new ArrayList<>();
+        for(SellerProduct sellerProduct: this.sellerProducts)
+            products.add(sellerProduct.getProduct());
+
+        return products;
+
+    }
+
+    public void setSellerProducts(List<SellerProduct> sellerProducts) {
+        this.sellerProducts = sellerProducts;
+    }
+
+    public Seller getSellerByCif(Session session, String cif) {
+        return session.createQuery("from Seller where cif= :cif", Seller.class).setParameter("cif", cif).uniqueResult();
     }
 
     public boolean validateSeller(String password) {

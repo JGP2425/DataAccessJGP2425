@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.jgp2425.unit.finalactivity_v1.entities.Sellers;
+import org.jgp2425.unit.finalactivity_v1.entities.Seller;
 
 import java.io.IOException;
 
@@ -78,7 +78,7 @@ public class SellerLoginController extends Application {
         //Open the session
         SessionFactory sessionFactory;
         sessionFactory = new Configuration().configure("hibernate.cfg.xml")
-                .addAnnotatedClass(Sellers.class)
+                .addAnnotatedClass(Seller.class)
                 .buildSessionFactory();
         Session session = sessionFactory.openSession();
 
@@ -90,7 +90,7 @@ public class SellerLoginController extends Application {
         if (!user.isEmpty() && !pwd.isEmpty()) {
             try {
                 //Retrieve the seller provided by the user
-                Sellers seller = new Sellers().getSellerByCif(session,user);
+                Seller seller = new Seller().getSellerByCif(session,user);
 
                 //If seller is founded
                 if (seller != null) {

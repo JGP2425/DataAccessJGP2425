@@ -11,6 +11,9 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.current_session_context_class">thread</property>
 
-        <mapping class="org.jgp2425.unit.finalactivity_v1.entities.Sellers"/>
+        <mapping class="org.jgp2425.unit.finalactivity_v1.entities.Seller"/>
+        <mapping class="org.jgp2425.unit.finalactivity_v1.entities.Category"/>
+        <mapping class="org.jgp2425.unit.finalactivity_v1.entities.Product"/>
+        <mapping class="org.jgp2425.unit.finalactivity_v1.entities.SellerProduct"/>
     </session-factory>
 </hibernate-configuration>

@@ -1,17 +1,27 @@
 package org.jgp2425.unit.finalactivity_v1;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.jgp2425.unit.finalactivity_v1.entities.Sellers;
+import org.jgp2425.unit.finalactivity_v1.entities.Seller;
 
-import java.util.regex.Matcher;
+import javax.swing.text.AttributeSet;
+
+import java.io.IOException;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class SellerDataController {
+    @FXML
+    public AnchorPane mainContent;
+
     @FXML
     private TextField cifField;
 
@@ -39,14 +49,17 @@ public class SellerDataController {
     @FXML
     private Label sucessfulLabel;
 
+    private Seller _seller;
+
     //Function to set all the parameters of the seller in the fields
-    public void setParametersSeller(Sellers seller) {
+    public void setParametersSeller(Seller seller) {
         cifField.setText(seller.getCif());
         nameField.setText(seller.getName());
         bnameField.setText(seller.getBusinessName());
         phoneField.setText(seller.getPhone());
         emailField.setText(seller.getEmail());
         pwdField.setText(seller.getPlainPassword());
+        _seller = seller;
     }
 
     //Function to validate empty fields and lengths of the characters.
@@ -129,6 +142,7 @@ public class SellerDataController {
         return isOk;
     }
 
+    //Function to update the seller
     public void updateSeller() {
         //Retrieve all the variables to update the seller
         String name = nameField.getText();
@@ -144,12 +158,12 @@ public class SellerDataController {
             try {
                 //Open the session
                 sessionFactory = new Configuration().configure("hibernate.cfg.xml")
-                        .addAnnotatedClass(Sellers.class)
+                        .addAnnotatedClass(Seller.class)
                         .buildSessionFactory();
                 session = sessionFactory.openSession();
 
                 //Retrieve the seller provided by the user
-                Sellers seller = new Sellers().getSellerByCif(session, cifField.getText());
+                Seller seller = new Seller().getSellerByCif(session, cifField.getText());
 
                 if (seller != null) {
                     //Generate MD5 Password to the new password
@@ -198,6 +212,68 @@ public class SellerDataController {
                     session.getTransaction().rollback();
                 throw e;
             }
+        }
+    }
+
+    //Method to change views
+    @FXML
+    private void changeView(MouseEvent event) throws IOException {
+        Object source = event.getSource();
+        if (source instanceof ImageView) {
+            String id = ((ImageView) source).getId();
+
+            //See what view to load by ID
+            try {
+                FXMLLoader loader = null;
+                switch (id) {
+                    case "sellerDataImg":
+                        loader = new FXMLLoader(getClass().getResource("SellerData-View.fxml"));
+                        break;
+                    case "addOfferImg":
+                        loader = new FXMLLoader(getClass().getResource("AddOffer-View.fxml"));
+                        break;
+                    case "exitImg":
+                        showExitConfirmation();
+                        break;
+                }
+
+                //Load the view
+                if (loader != null) {
+                    AnchorPane newView = loader.load();
+                    if (id.equals("addOfferImg")) {
+                        AddOfferController addOfferController = loader.getController();
+                        addOfferController.setSellerAndFields(_seller);
+                    }
+                    if (id.equals("sellerDataImg")) {
+                        SellerDataController sellerDataController = loader.getController();
+                        sellerDataController.setParametersSeller(_seller);
+                    }
+
+                    mainContent.getChildren().setAll(newView);
+                }
+            } catch (Exception e) {
+                throw e;
+            }
+        }
+    }
+
+    private void showExitConfirmation() {
+        //Creation of the alert
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit confirmation");
+        alert.setHeaderText("Are you sure you want to leave?");
+        alert.setContentText("If you exit, you will lose any unsaved changes.");
+
+        //Dialogue options
+        ButtonType buttonYes = new ButtonType("Yes");
+        ButtonType buttonNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonYes, buttonNo);
+
+        //If the user press yes
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == buttonYes) {
+            Platform.exit();
         }
     }
 }

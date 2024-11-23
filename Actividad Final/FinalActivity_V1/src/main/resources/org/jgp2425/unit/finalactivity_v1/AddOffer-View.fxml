@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="mainContent" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jgp2425.unit.finalactivity_v1.SellerDataController">
+<AnchorPane fx:id="mainContent" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jgp2425.unit.finalactivity_v1.AddOfferController">
    <children>
       <GridPane fx:id="leftPanel" prefHeight="600.0" prefWidth="125.0" style="-fx-background-color: CDCDCD;">
         <columnConstraints>
@@ -35,7 +35,7 @@
                   <Image url="@Icons/paquete-lupa.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="listOffersImg"  fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+            <ImageView fx:id="listOffersImg" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -54,20 +54,17 @@
       </GridPane>
       <GridPane fx:id="controlGrid" layoutX="133.0" layoutY="100.0" prefHeight="422.0" prefWidth="657.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="325.0" minWidth="10.0" prefWidth="169.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="547.0" minWidth="10.0" prefWidth="488.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="325.0" minWidth="10.0" prefWidth="122.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="547.0" minWidth="10.0" prefWidth="535.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label prefHeight="36.0" prefWidth="137.0" text="CIF: " GridPane.halignment="LEFT" GridPane.valignment="CENTER">
+            <Label prefHeight="36.0" prefWidth="137.0" text="Product:" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
@@ -75,7 +72,7 @@
                   <Font name="Gill Sans Ultra Bold Condensed" size="18.0" />
                </font>
             </Label>
-            <Label layoutX="20.0" layoutY="26.0" prefHeight="36.0" prefWidth="137.0" text="Name:" GridPane.rowIndex="1">
+            <Label layoutX="20.0" layoutY="26.0" prefHeight="36.0" prefWidth="137.0" text="From:" GridPane.rowIndex="1">
                <font>
                   <Font name="Gill Sans Ultra Bold Condensed" size="18.0" />
                </font>
@@ -83,7 +80,7 @@
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <Label layoutX="10.0" layoutY="93.0" prefHeight="36.0" prefWidth="137.0" text="Business name: " GridPane.rowIndex="2">
+            <Label layoutX="10.0" layoutY="93.0" prefHeight="36.0" prefWidth="137.0" text="To:" GridPane.rowIndex="2">
                <font>
                   <Font name="Gill Sans Ultra Bold Condensed" size="18.0" />
                </font>
@@ -91,7 +88,7 @@
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <Label layoutX="10.0" layoutY="26.0" prefHeight="36.0" prefWidth="137.0" text="Phone:" GridPane.rowIndex="3">
+            <Label layoutX="10.0" layoutY="26.0" prefHeight="36.0" prefWidth="137.0" text="Discount:" GridPane.rowIndex="3">
                <font>
                   <Font name="Gill Sans Ultra Bold Condensed" size="18.0" />
                </font>
@@ -99,73 +96,23 @@
                   <Insets left="10.0" />
                </GridPane.margin>
             </Label>
-            <Label layoutX="10.0" layoutY="26.0" prefHeight="36.0" prefWidth="137.0" text="Email (Optional):" GridPane.rowIndex="4">
-               <font>
-                  <Font name="Gill Sans Ultra Bold Condensed" size="18.0" />
-               </font>
+            <TextField fx:id="discountField" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                <GridPane.margin>
-                  <Insets left="10.0" />
-               </GridPane.margin>
-            </Label>
-            <Label layoutX="10.0" layoutY="294.0" prefHeight="36.0" prefWidth="137.0" text="Password:" GridPane.rowIndex="5">
-               <font>
-                  <Font name="Gill Sans Ultra Bold Condensed" size="18.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets left="10.0" />
-               </GridPane.margin>
-            </Label>
-            <TextField fx:id="cifField" disable="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-               <GridPane.margin>
-                  <Insets left="10.0" right="10.0" />
+                  <Insets left="18.0" right="19.0" />
                </GridPane.margin>
             </TextField>
-            <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <ComboBox fx:id="productCmb" prefWidth="500.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <DatePicker fx:id="fromDtt" prefWidth="500.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
-                  <Insets left="10.0" right="10.0" />
-               </GridPane.margin>
-            </TextField>
-            <TextField fx:id="bnameField" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-               <GridPane.margin>
-                  <Insets left="10.0" right="10.0" />
-               </GridPane.margin>
-            </TextField>
-            <TextField fx:id="phoneField" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
-               <GridPane.margin>
-                  <Insets left="10.0" right="10.0" />
-               </GridPane.margin>
-            </TextField>
-            <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
-               <GridPane.margin>
-                  <Insets left="10.0" right="10.0" />
-               </GridPane.margin>
-            </TextField>
-            <TextField fx:id="pwdField" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
-               <GridPane.margin>
-                  <Insets left="10.0" right="10.0" />
-               </GridPane.margin>
-            </TextField>
-            <Label layoutX="20.0" layoutY="324.0" prefHeight="36.0" prefWidth="159.0" text="Confirm password:" GridPane.rowIndex="6">
-               <font>
-                  <Font name="Gill Sans Ultra Bold Condensed" size="18.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets left="10.0" right="10.0" />
-               </GridPane.margin>
-            </Label>
-            <TextField fx:id="confirmPwdField" layoutX="178.0" layoutY="330.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
-               <opaqueInsets>
                   <Insets />
-               </opaqueInsets>
-               <GridPane.margin>
-                  <Insets left="10.0" right="10.0" />
                </GridPane.margin>
-            </TextField>
+            </DatePicker>
+            <DatePicker fx:id="toDtt" prefWidth="500.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
          </children>
       </GridPane>
       <Pane layoutX="125.0" prefHeight="100.0" prefWidth="670.0">
          <children>
-            <Label alignment="CENTER" layoutX="242.0" layoutY="33.0" prefHeight="47.0" prefWidth="186.0" text="Seller Data" textAlignment="CENTER">
+            <Label alignment="CENTER" layoutX="242.0" layoutY="33.0" prefHeight="47.0" prefWidth="186.0" text="Add Offer" textAlignment="CENTER">
                <font>
                   <Font name="Cooper Black" size="32.0" />
                </font>
@@ -175,7 +122,7 @@
                <effect>
                   <Glow />
                </effect></Label>
-            <Label alignment="CENTER" layoutX="248.0" layoutY="28.0" opacity="0.3" prefHeight="47.0" prefWidth="186.0" text="Seller Data" textAlignment="CENTER" textFill="#000000ab">
+            <Label alignment="CENTER" layoutX="248.0" layoutY="28.0" opacity="0.3" prefHeight="47.0" prefWidth="186.0" text="Add Offer" textAlignment="CENTER" textFill="#000000ab">
                <font>
                   <Font name="Cooper Black" size="32.0" />
                </font>
@@ -197,7 +144,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="updateBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#updateSeller" prefHeight="30.0" prefWidth="80.0" text="Update" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <Button fx:id="addBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addOffer" prefHeight="30.0" prefWidth="85.0" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <font>
                   <Font name="Gill Sans Ultra Bold Condensed" size="15.0" />
                </font>
@@ -210,7 +157,7 @@
                   <Font name="Arial Bold Italic" size="12.0" />
                </font>
             </Label>
-            <Label fx:id="sucessfulLabel" layoutX="198.0" layoutY="27.0" text="Seller successfully updated!" textAlignment="CENTER" textFill="#39b500" visible="false" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <Label fx:id="sucessfulLabel" layoutX="198.0" layoutY="27.0" text="Offer successfully added!" textAlignment="CENTER" textFill="#39b500" visible="false" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <font>
                   <Font name="Arial Bold Italic" size="12.0" />
                </font>

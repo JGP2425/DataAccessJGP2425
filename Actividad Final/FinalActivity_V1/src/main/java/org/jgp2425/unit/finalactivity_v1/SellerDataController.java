@@ -12,8 +12,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.jgp2425.unit.finalactivity_v1.entities.Seller;
 
-import javax.swing.text.AttributeSet;
-
 import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;

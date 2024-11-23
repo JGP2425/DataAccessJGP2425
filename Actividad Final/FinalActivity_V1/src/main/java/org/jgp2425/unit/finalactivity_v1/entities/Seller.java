@@ -4,10 +4,8 @@ import org.hibernate.Session;
 import org.jgp2425.unit.finalactivity_v1.Utils;
 
 import javax.persistence.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "sellers")

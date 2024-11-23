@@ -4,7 +4,6 @@ import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "seller_products")

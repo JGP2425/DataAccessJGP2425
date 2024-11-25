@@ -1,9 +1,12 @@
 package org.jgp2425.unit.finalactivity_v1.entities;
 
+import net.bytebuddy.asm.Advice;
 import org.hibernate.Session;
+import org.hibernate.event.spi.PreUpdateEvent;
 import org.jgp2425.unit.finalactivity_v1.Utils;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +38,12 @@ public class Seller {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "url")
+    private String url;
+
+    @Column(name = "pro")
+    private boolean pro;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<SellerProduct> sellerProducts;
@@ -104,6 +113,22 @@ public class Seller {
         this.password = password;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public boolean getPro() {
+        return pro;
+    }
+
+    public void setPro(boolean pro) {
+        this.pro = pro;
+    }
+
     public ArrayList<Product> getSellerProducts() {
         ArrayList<Product> products = new ArrayList<>();
         for(SellerProduct sellerProduct: this.sellerProducts)
@@ -123,5 +148,14 @@ public class Seller {
 
     public boolean validateSeller(String password) {
         return Utils.validatePassword(password, this.password);
+    }
+
+    //Method to return the count of offers in a period of time
+    public int countOffersByPeriodOfTime(Session session, LocalDate fromDate, LocalDate toDate) {
+        return  session
+                .createQuery("from SellerProduct where offer_start_date <= :fromDate and offer_end_date >= :toDate", SellerProduct.class)
+                .setParameter("fromDate", fromDate)
+                .setParameter("toDate", toDate)
+                .getResultList().size();
     }
 }

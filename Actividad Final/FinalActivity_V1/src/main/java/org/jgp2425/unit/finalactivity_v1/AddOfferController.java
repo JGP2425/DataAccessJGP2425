@@ -111,6 +111,12 @@ public class AddOfferController {
         LocalDate fromDate = fromDtt.getValue();
         LocalDate toDate = toDtt.getValue();
 
+        //Open the session
+        SessionFactory sessionFactory;
+        sessionFactory = new Configuration().configure("hibernate.cfg.xml")
+                .addAnnotatedClass(Seller.class)
+                .buildSessionFactory();
+        Session session = sessionFactory.openSession();
 
         //Validations
         if (fromDate == null || toDate == null) {
@@ -131,12 +137,12 @@ public class AddOfferController {
             errorLabel.setText("Dates cannot be before than the current day");
             correctDate = false;
         }
-        //Validation with the procedure of the BBDD
-        else  {
+        //Validation with the procedure of the BBDD if the seller is not pro
+        else if (!_seller.getPro()){
             Product selectedProduct = productCmb.getValue();
             int productID = selectedProduct.getProductId();
 
-            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/onlinemarket", "postgres", "1234");
+            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/onlinemarket", "postgres", "postgres");
                  CallableStatement callableStatement = connection.prepareCall("{? = call is_product_discounted_in_period(?, ?, ?)}")) {
 
                 //Set the parameters
@@ -163,6 +169,16 @@ public class AddOfferController {
                 errorLabel.setVisible(true);
                 sucessfulLabel.setVisible(false);
                 errorLabel.setText("Error while validating the discount period.");
+                correctDate = false;
+            }
+        }
+        //If the seller is pro can have three offer up in the same period of time
+        else if (_seller.getPro()) {
+            int offerCount = _seller.countOffersByPeriodOfTime(session, fromDate,toDate);
+            if (offerCount > 3) {
+                errorLabel.setVisible(true);
+                sucessfulLabel.setVisible(false);
+                errorLabel.setText("You exceeded the 3 discounted item limit by PRO users");
                 correctDate = false;
             }
         }
@@ -198,8 +214,8 @@ public class AddOfferController {
             errorLabel.setText("Discount must to be a two-digit number with a % at the end (Ex: 10%)");
             correctDiscount = false;
         }
-        //Discount value validations
-        else {
+        //Discount value validations for normal sellers
+        else if (!_seller.getPro()){
             int discountPercent = Integer.parseInt(discount.replace("%", ""));
             if (differenceDays > 30) {
                 errorLabel.setVisible(true);
@@ -210,31 +226,71 @@ public class AddOfferController {
             if (differenceDays <= 30 && differenceDays > 15 && discountPercent > 10) {
                 errorLabel.setVisible(true);
                 sucessfulLabel.setVisible(false);
-                errorLabel.setText("For a 30 day period the maximum discount is 10%");
+                errorLabel.setText("For a 30 day period the maximum discount is 10% for normal sellers");
                 correctDiscount = false;
             }
             else if (differenceDays <= 15 && differenceDays > 7 && discountPercent > 15) {
                 errorLabel.setVisible(true);
                 sucessfulLabel.setVisible(false);
-                errorLabel.setText("For a 15 day period the maximum discount is 15%");
+                errorLabel.setText("For a 15 day period the maximum discount is 15% for normal sellers");
                 correctDiscount = false;
             }
             else if (differenceDays <= 7 && differenceDays > 3 && discountPercent > 20) {
                 errorLabel.setVisible(true);
                 sucessfulLabel.setVisible(false);
-                errorLabel.setText("For a 7 day period the maximum discount is 20%");
+                errorLabel.setText("For a 7 day period the maximum discount is 20% for normal sellers");
                 correctDiscount = false;
             }
             else if (differenceDays <= 3 && differenceDays > 1 && discountPercent > 30) {
                 errorLabel.setVisible(true);
                 sucessfulLabel.setVisible(false);
-                errorLabel.setText("For a 3 day period the maximum discount is 30%");
+                errorLabel.setText("For a 3 day period the maximum discount is 30% for normal sellers");
                 correctDiscount = false;
             }
             else if (discountPercent > 50) {
                 errorLabel.setVisible(true);
                 sucessfulLabel.setVisible(false);
-                errorLabel.setText("For a 1 day period the maximum discount is 50%");
+                errorLabel.setText("For a 1 day period the maximum discount is 50% for normal sellers");
+                correctDiscount = false;
+            }
+        }
+        //Discount validations for PRO sellers
+        else if (_seller.getPro()) {
+            int discountPercent = Integer.parseInt(discount.replace("%", ""));
+            if (differenceDays > 30) {
+                errorLabel.setVisible(true);
+                sucessfulLabel.setVisible(false);
+                errorLabel.setText("More than 30 day offers are not allowed.");
+                correctDiscount = false;
+            }
+            if (differenceDays <= 30 && differenceDays > 15 && discountPercent > 20) {
+                errorLabel.setVisible(true);
+                sucessfulLabel.setVisible(false);
+                errorLabel.setText("For a 30 day period the maximum discount is 20% for PRO sellers");
+                correctDiscount = false;
+            }
+            else if (differenceDays <= 15 && differenceDays > 7 && discountPercent > 15) {
+                errorLabel.setVisible(true);
+                sucessfulLabel.setVisible(false);
+                errorLabel.setText("For a 15 day period the maximum discount is 15% for PRO sellers");
+                correctDiscount = false;
+            }
+            else if (differenceDays <= 7 && differenceDays > 3 && discountPercent > 30) {
+                errorLabel.setVisible(true);
+                sucessfulLabel.setVisible(false);
+                errorLabel.setText("For a 7 day period the maximum discount is 30% for PRO sellers");
+                correctDiscount = false;
+            }
+            else if (differenceDays <= 3 && differenceDays > 1 && discountPercent > 50) {
+                errorLabel.setVisible(true);
+                sucessfulLabel.setVisible(false);
+                errorLabel.setText("For a 3 day period the maximum discount is 50% for PRO sellers");
+                correctDiscount = false;
+            }
+            else if (discountPercent > 50) {
+                errorLabel.setVisible(true);
+                sucessfulLabel.setVisible(false);
+                errorLabel.setText("For a 1 day period the maximum discount is 50% for PRO sellers");
                 correctDiscount = false;
             }
         }

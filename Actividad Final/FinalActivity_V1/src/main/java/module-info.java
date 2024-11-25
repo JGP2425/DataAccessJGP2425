@@ -6,6 +6,7 @@ module org.jgp2425.unit.finalactivity_v1 {
     requires java.naming;
     requires java.sql;
     requires java.persistence;
+    requires net.bytebuddy;
 
 
     opens org.jgp2425.unit.finalactivity_v1 to javafx.fxml;

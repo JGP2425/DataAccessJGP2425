@@ -12,6 +12,18 @@ public class MainApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("SellerLogin-View.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+
+        //Retrieve login controller
+        SellerLoginController loginController = fxmlLoader.getController();
+
+        //Check if the database is available
+        if (!Utils.isDatabaseAvailable())
+            loginController.showPopUp(stage);
+
+        //Set the cif is the user used the remember me checkbox
+        loginController.setUserField();
+
+        //Show the login view
         stage.setTitle("Online Market");
         stage.setScene(scene);
         stage.show();

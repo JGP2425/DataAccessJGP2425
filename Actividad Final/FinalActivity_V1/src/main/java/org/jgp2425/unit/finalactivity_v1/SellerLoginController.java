@@ -6,10 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -18,9 +15,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.jgp2425.unit.finalactivity_v1.entities.Seller;
 
-import java.io.IOException;
+import java.io.*;
 
-public class SellerLoginController extends Application {
+public class SellerLoginController{
     @FXML
     private TextField userField;
 
@@ -30,21 +27,42 @@ public class SellerLoginController extends Application {
     @FXML
     private Label errorLabel;
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("SellerLogin-View.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-        stage.setTitle("Online Market");
-        stage.setScene(scene);
-        stage.show();
+    @FXML
+    private CheckBox rememberChk;
 
-        //Check if the database is available
-        if (!Utils.isDatabaseAvailable()) {
-            showPopUp(stage);
+    private static String cifFilePath = "C:\\examenJGP2425\\Actividad Final\\FinalActivity_V1\\src\\main\\resources\\cif.txt";
+
+    public void setUserField() {
+        //Check if the user have remembered the last login
+        String cif = "";
+        File file = new File(cifFilePath);
+        if (file.exists()) {
+            //Read the last cif logged
+            BufferedReader bufferedReader = null;
+            try {
+                bufferedReader = new BufferedReader(new FileReader(cifFilePath));
+                cif = bufferedReader.readLine();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            finally {
+                if (bufferedReader != null) {
+                    try {
+                        bufferedReader.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
         }
+
+        //If the cif is fulfilled autocomplete the cif field
+        if (!cif.isEmpty() && userField != null)
+            userField.setText(cif);
     }
 
-    private void showPopUp(Stage ownerStage) {
+    public void showPopUp(Stage ownerStage) {
         //Create scene for the pop-up
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -100,6 +118,29 @@ public class SellerLoginController extends Application {
 
                     //If valid enter the application, else error message
                     if (seller.validateSeller(pwd)) {
+                        //If the user want to be remembered save the cif in a txt file
+                        if (rememberChk.isSelected())
+                        {
+                            PrintWriter printWriter = null;
+                            try {
+                                printWriter = new PrintWriter(new BufferedWriter(new FileWriter(cifFilePath, false)));
+                                printWriter.println(seller.getCif());
+                            }
+                            catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            finally {
+                                if (printWriter != null)
+                                    printWriter.close();
+                            }
+                        }
+                        //Delete the file text
+                        else {
+                            File cifFile = new File(cifFilePath);
+                            if (cifFile.exists())
+                                cifFile.delete();
+                        }
+
                         //Load the other windows with the seller data
                         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("SellerData-View.fxml"));
                         Scene scene = new Scene(fxmlLoader.load(), 800, 600);

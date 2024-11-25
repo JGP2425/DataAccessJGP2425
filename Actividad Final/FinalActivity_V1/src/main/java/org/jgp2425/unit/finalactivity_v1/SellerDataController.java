@@ -42,10 +42,14 @@ public class SellerDataController {
     private TextField confirmPwdField;
 
     @FXML
+    private TextField urlField;
+
+    @FXML
     private Label errorLabel;
 
     @FXML
     private Label sucessfulLabel;
+
 
     private Seller _seller;
 
@@ -57,6 +61,7 @@ public class SellerDataController {
         phoneField.setText(seller.getPhone());
         emailField.setText(seller.getEmail());
         pwdField.setText(seller.getPlainPassword());
+        urlField.setText(seller.getUrl());
         _seller = seller;
     }
 
@@ -69,11 +74,19 @@ public class SellerDataController {
         String pwd = pwdField.getText();
         String confirmPwd = confirmPwdField.getText();
         String email = emailField.getText();
+        String url = urlField.getText();
         boolean isOk = true;
 
         //Regex for email and phone validation
         String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         String phoneRegex = "^\\d{3}-\\d{3}-\\d{3}$";
+        String urlRegex = "^https?://(www\\.)?[\\w-]+(\\.[\\w-]+)+(\\.[a-z]{2,6})(/[\\w-]*)*/?$";
+
+        //Check if the email or url are null
+        if (email.isEmpty())
+            email = "";
+        if (url.isEmpty())
+            url = "";
 
         //Empty validations and length validations
         if (name.isEmpty() || bname.isEmpty() || phone.isEmpty() || pwd.isEmpty() || confirmPwd.isEmpty()) {
@@ -136,6 +149,18 @@ public class SellerDataController {
             errorLabel.setText("Passwords needs to be identical.");
             isOk = false;
         }
+        else if (url.length() >= 255) {
+            errorLabel.setVisible(true);
+            sucessfulLabel.setVisible(false);
+            errorLabel.setText("URL cannot be more than 255 characters.");
+            isOk = false;
+        }
+        else if (!Pattern.matches(urlRegex, url)) {
+            errorLabel.setVisible(true);
+            sucessfulLabel.setVisible(false);
+            errorLabel.setText("URL need to have a valid format (Ex: https:\\\\www.web.com)");
+            isOk = false;
+        }
 
         return isOk;
     }
@@ -148,6 +173,7 @@ public class SellerDataController {
         String phone = phoneField.getText();
         String pwd = pwdField.getText();
         String email = emailField.getText();
+        String url = urlField.getText();
         SessionFactory sessionFactory;
         Session session = null;
 
@@ -192,6 +218,13 @@ public class SellerDataController {
                     }
                     else
                         seller.setEmail(email);
+
+                    if (seller.getUrl() != null) {
+                        if (!seller.getUrl().equals(url))
+                            seller.setUrl(url);
+                    }
+                    else
+                        seller.setUrl(url);
 
                     if (!newMD5pwd.isEmpty())
                         seller.setPassword(newMD5pwd);

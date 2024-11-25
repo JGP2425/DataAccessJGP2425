@@ -36,7 +36,7 @@ public class Utils {
 
     public static boolean isDatabaseAvailable() {
         try (Connection connection = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/onlinemarket", "postgres", "1234")) {
+                "jdbc:postgresql://localhost:5432/onlinemarket", "postgres", "postgres")) {
             return true;
         } catch (SQLException e) {
             return false;

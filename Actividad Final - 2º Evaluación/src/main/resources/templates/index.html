@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Data</title>
+    <link rel="stylesheet" href="/api-rest/css/index.css">
+</head>
+<body>
+<div class="container">
+    <aside class="sidebar">
+        <img src="/api-rest/img/avatar.png" alt="User">
+        <img src="/api-rest/img/paquete-lupa.png" alt="Add Product">
+        <img src="/api-rest/img/paquete.png" alt="Add Offer">
+        <form action="#" th:action="@{/logout}" method="post">
+            <button type="submit">
+                <img src="/api-rest/img/abierto.png" alt="Logout" />
+            </button>
+        </form>
+    </aside>
+    <main class="content">
+        <h2>Seller Data</h2>
+
+        <div th:if="${okMessage}" class="message success">
+            <p th:text="${okMessage}"></p>
+        </div>
+
+        <div th:if="${warningMessage}" class="message warning">
+            <p th:text="${warningMessage}"></p>
+        </div>
+
+        <form id="mainForm" th:action="@{/sellers/updateSeller}" th:object="${seller}" method="post">
+            <label>CIF:</label>
+            <input id="cifInput" type="text" name="cif" th:value="${seller.cif}" readonly >
+
+            <label>Name:</label>
+            <input type="text" name="name" th:value="${seller.name}" required>
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span>
+
+            <label>Business name:</label>
+            <input type="text" name="businessName" th:value="${seller.businessName}" required>
+            <span th:if="${#fields.hasErrors('businessName')}" th:errors="*{businessName}" class="error"></span>
+
+            <label>Phone:</label>
+            <input type="text" name="phone" th:value="${seller.phone}" required>
+            <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error"></span>
+
+            <label>Email:</label>
+            <input type="email" name="email" th:value="${seller.email}" placeholder="E-mail of the seller">
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></span>
+
+            <label>Password:</label>
+            <input type="password" name="plainPassword" th:value="${seller.plainPassword}" required>
+            <span th:if="${#fields.hasErrors('plainPassword')}" th:errors="*{plainPassword}" class="error"></span>
+
+            <label>Confirm Password:</label>
+            <input type="password" name="password" th:value="${passwordMismatch} ? ${seller.password} : ${seller.plainPassword}" required>
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></span>
+            <span th:if="${notMatchingPass}" th:text="${notMatchingPass}" class="error"></span>
+
+            <div class="buttons">
+                <button type="submit" id="okButton">OK</button>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>

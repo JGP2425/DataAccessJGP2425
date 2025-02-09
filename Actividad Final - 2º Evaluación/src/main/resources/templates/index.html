@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Data</title>
-    <link rel="stylesheet" href="/api-rest/css/index.css">
+    <link rel="stylesheet" href="/api-rest/css/mainStyle.css">
 </head>
 <body>
 <div class="container">
     <aside class="sidebar">
         <img src="/api-rest/img/avatar.png" alt="User">
-        <img src="/api-rest/img/paquete-lupa.png" alt="Add Product">
+        <form action="#" th:action="@{/view/addProduct}" method="get">
+            <button type="submit">
+                <img src="/api-rest/img/paquete-lupa.png" alt="Logout" />
+            </button>
+        </form>
         <img src="/api-rest/img/paquete.png" alt="Add Offer">
         <form action="#" th:action="@{/logout}" method="post">
             <button type="submit">

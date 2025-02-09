@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add to Store</title>
+    <link rel="stylesheet" href="/api-rest/css/mainStyle.css">
+</head>
+<body>
+<div class="container">
+    <aside class="sidebar">
+        <form action="#" th:action="@{/view/index}" method="get">
+            <button type="submit">
+                <img src="/api-rest/img/avatar.png" alt="Logout" />
+            </button>
+        </form>
+        <img src="/api-rest/img/paquete-lupa.png" alt="Add Product">
+        <img src="/api-rest/img/paquete.png" alt="Add Offer">
+        <form action="#" th:action="@{/logout}" method="post">
+            <button type="submit">
+                <img src="/api-rest/img/abierto.png" alt="Logout" />
+            </button>
+        </form>
+    </aside>
+    <main class="content">
+        <h2>Add to Store</h2>
+
+        <div th:if="${okMessage}" class="message success">
+            <p th:text="${okMessage}"></p>
+        </div>
+
+        <div th:if="${warningMessage}" class="message warning">
+            <p th:text="${warningMessage}"></p>
+        </div>
+
+        <form id="categoryForm" th:action="@{/view/addProduct}" method="get">
+            <label for="categorySelect">Category:</label> <br>
+            <select id="categorySelect" name="categoryId" onchange="document.getElementById('categoryForm').submit()" required>
+                <option value="" selected disabled>Choose a category</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.categoryId}"
+                        th:text="${category.categoryName}"
+                        th:selected="${category.categoryId == selectedCategoryId}">
+                </option>
+            </select>
+        </form>
+
+        <form id="addProductForm" th:action="@{/product/add}" method="post" th:object="${productForm}">
+            <span th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}" class="error"></span>
+            <input type="hidden" id="hiddenCategoryId" name="categoryId" th:value="${selectedCategoryId}">
+            <label for="productSelect">Product:</label>
+            <select id="productSelect" name="productId" th:disabled="${!hasProducts}" required>
+                <option th:if="${hasProducts}" value="" disabled selected>Select a product</option>
+                <option th:if="${!hasProducts}" value="" disabled selected>Your user don't have any products to add in this category</option>
+                <option th:each="product : ${products}"
+                        th:value="${product.productId}"
+                        th:text="${product.productName}">
+                </option>
+            </select>
+            <span th:if="${#fields.hasErrors('productId')}" th:errors="*{productId}" class="error"></span>
+
+            <label for="stockInput">Stock:</label>
+            <input id="stockInput" type="range" name="stock" min="0" max="100" step="1" th:value="*{stock}">
+            <span id="stockValue" th:text="*{stock} + ' Units'">0 Units</span>
+            <span th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}" class="error"></span>
+
+            <label for="priceInput">Price:</label>
+            <input id="priceInput" th:value="*{price}" type="number"  name="price" min="0" max= "9999999999,99" step="0.01" placeholder="Enter price" required>
+            <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="error"></span>
+
+            <div class="buttons">
+                <button type="submit" id="addButton">Add</button>
+            </div>
+        </form>
+    </main>
+</div>
+<script>
+    const stockInput = document.getElementById('stockInput');
+    const stockValue = document.getElementById('stockValue');
+
+    stockInput.addEventListener('input', () => {
+        stockValue.textContent = `${stockInput.value} Units`;
+    });
+</script>
+</body>
+</html>

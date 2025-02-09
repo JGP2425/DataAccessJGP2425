@@ -5,6 +5,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "sellers")
@@ -46,6 +48,9 @@ public class SellerEntity {
     @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
     @Column(name = "password", nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SellerProductEntity> sellerProducts = new ArrayList<>();
 
     // Getters y setters
     public int getSellerId() {
@@ -112,10 +117,20 @@ public class SellerEntity {
         this.password = password;
     }
 
+    public List<SellerProductEntity> getSellerProducts() {
+        return sellerProducts;
+    }
+
+    public void setSellerProducts(List<SellerProductEntity> sellerProducts) {
+        this.sellerProducts = sellerProducts;
+    }
+
     public boolean checkIfSameEntity(SellerEntity otherSeller) {
         if (this.cif.equals(otherSeller.getCif()) && this.email.equals(otherSeller.getEmail())  && this.phone.equals(otherSeller.getPhone()) && this.plainPassword.equals(otherSeller.getPlainPassword()) && this.businessName.equals(otherSeller.getBusinessName()) && this.name.equals(otherSeller.getName()))
             return true;
         else
             return false;
     }
+
+
 }

@@ -68,6 +68,6 @@ public class sellersController {
             }
         }
 
-        return "redirect:/";
+        return "redirect:/view/index";
     }
 }

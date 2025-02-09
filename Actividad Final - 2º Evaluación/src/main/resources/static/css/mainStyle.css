@@ -157,3 +157,43 @@ input:invalid ~ .error {
     background-color: #F28500;
     color: white;
 }
+#addProductForm {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+select, input[type="number"] {
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#stockInput {
+    margin-top: 10px;
+}
+
+#stockValue {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+#addButton {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    margin-top: 20px;
+}
+
+#addButton:hover {
+    transform: scale(1.1);
+}

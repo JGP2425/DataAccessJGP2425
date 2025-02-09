@@ -46,7 +46,7 @@
             <span th:if="${#fields.hasErrors('businessName')}" th:errors="*{businessName}" class="error"></span>
 
             <label>Phone:</label>
-            <input type="text" name="phone" th:value="${seller.phone}" required>
+            <input type="text" name="phone" th:value="${seller.phone}" pattern="^\d{3}-\d{3}-\d{3}$" title="Phone must contain 9 digits with a hyphen separating every three digits" required>
             <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error"></span>
 
             <label>Email:</label>

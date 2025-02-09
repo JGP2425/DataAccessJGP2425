@@ -8,14 +8,16 @@
 <div class="login-container">
     <h1>Online Market</h1>
     <h2>Seller Login</h2>
-    <form action="#" th:action="@{/login}" method="post">
+    <form action="#" th:action="@{/login}" th:object="${loginForm}" method="post">
         <div>
             <label for="username">CIF</label>
-            <input type="text" id="username" name="username" required placeholder="Enter your CIF"/>
+            <input type="text" id="username" th:field="*{username}" th:value="*{username}" name="username"  required placeholder="Enter your CIF"/>
+            <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error"></span>
         </div>
         <div>
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required placeholder="Enter your password"/>
+            <input type="password" id="password" th:field="*{password}" th:value="*{password}" name="password" required placeholder="Enter your password"/>
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></span>
         </div>
         <div>
             <button type="submit">Login</button>

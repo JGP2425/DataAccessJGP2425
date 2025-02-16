@@ -10,6 +10,7 @@ import com.jgp.OnlineMarket.OnlineMarket.models.entities.SellerProductEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,4 +82,10 @@ public class productService {
         sellerProductDAO.save(sellerProduct);
 
     }
+
+    public boolean isOfferOverlapping(SellerEntity seller, LocalDate startDate, LocalDate endDate) {
+        List<SellerProductEntity> overlappingOffers = sellerProductDAO.findOverlappingOffers(seller, startDate, endDate);
+        return !overlappingOffers.isEmpty();
+    }
+
 }

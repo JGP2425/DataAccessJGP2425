@@ -126,7 +126,13 @@ public class viewController {
             return "addOffer";
         }
 
+        if (productService.isOfferOverlapping(seller, offerForm.getFrom(), offerForm.getTo())) {
+            redirectAttributes.addFlashAttribute("warningMessage", "There is already an offer in this date range.");
+            return "redirect:/view/addOfferView";
+        }
+
         try {
+
             SellerProductEntity offer = productService.getOfferByProduct(productService.getProductById(offerForm.getProductId()), seller);
             offer.setOfferPrice(offerForm.getDiscount().divide(new BigDecimal(100)).multiply(offer.getPrice()));
             offer.setOfferStartDate(offerForm.getFrom());

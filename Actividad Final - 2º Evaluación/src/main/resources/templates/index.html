@@ -10,7 +10,7 @@
 <div class="container">
     <aside class="sidebar">
         <img src="/api-rest/img/avatar.png" alt="User">
-        <form action="#" th:action="@{/view/addProduct}" method="get">
+        <form action="#" th:action="@{/view/addProductView}" method="get">
             <button type="submit">
                 <img src="/api-rest/img/paquete-lupa.png" alt="Logout" />
             </button>
@@ -37,7 +37,7 @@
             <p th:text="${warningMessage}"></p>
         </div>
 
-        <form id="mainForm" th:action="@{/sellers/updateSeller}" th:object="${seller}" method="post">
+        <form id="mainForm" th:action="@{/view/updateSeller}" th:object="${seller}" method="post">
             <label>CIF:</label>
             <input id="cifInput" type="text" name="cif" th:value="${seller.cif}" readonly >
 

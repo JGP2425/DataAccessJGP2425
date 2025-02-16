@@ -45,7 +45,40 @@ public class viewController {
         return "index";
     }
 
-    @GetMapping("/addProduct")
+    @PostMapping("/updateSeller")
+    public String updateSeller(@Valid @ModelAttribute("seller") SellerEntity seller, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model, @AuthenticationPrincipal User user) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("seller", seller);
+            return "index";
+        }
+
+        seller.setCif(user.getUsername());
+
+        if (!seller.getPlainPassword().equals(seller.getPassword()))
+        {
+            model.addAttribute("notMatchingPass", "Passwords do not match");
+            model.addAttribute("passwordMismatch", true);
+            model.addAttribute("seller",seller);
+            return "index";
+        }
+        else {
+            SellerEntity sellerBBDD = sellersService.findSellerByCif(seller.getCif());
+            if (seller.checkIfSameEntity(sellerBBDD))
+            {
+                model.addAttribute("seller", seller);
+                redirectAttributes.addFlashAttribute("warningMessage", "No changes detected. No update was made.");
+            }
+            else {
+                SellerEntity sellerUpdated = sellersService.updateSeller(seller);
+                model.addAttribute("seller", sellerUpdated);
+                redirectAttributes.addFlashAttribute("okMessage", "Seller data updated successfully!");
+            }
+        }
+
+        return "redirect:/view/index";
+    }
+
+    @GetMapping("/addProductView")
     public String addProductView(@RequestParam(value = "categoryId", required = false) Integer categoryId, @AuthenticationPrincipal User user, Model model) {
         SellerEntity seller = sellersService.findSellerByCif(user.getUsername());
 
@@ -77,6 +110,52 @@ public class viewController {
         model.addAttribute("selectedCategoryId", categoryId);
 
         return "addProduct";
+    }
+
+    @PostMapping("/addProduct")
+    public String addProductToSeller(@ModelAttribute("productForm") @Valid ProductForm productForm,
+                                     BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                                     @AuthenticationPrincipal User user, Model model)
+    {
+        SellerEntity seller = sellersService.findSellerByCif(user.getUsername());
+
+        if (bindingResult.hasErrors()) {
+
+            List<CategoryEntity> categories = categoryService.getAllCategories();
+            model.addAttribute("categories", categories);
+
+            if (productForm.getCategoryId() != null) {
+                List<ProductEntity> products = productService.getProductsByCategory(productForm.getCategoryId());
+                List<ProductEntity> availableProducts = products.stream()
+                        .filter(product -> seller.getSellerProducts().stream()
+                                .noneMatch(sellerProduct -> sellerProduct.getProduct().getProductId() == product.getProductId()))
+                        .toList();
+
+                model.addAttribute("products", availableProducts);
+                model.addAttribute("hasProducts", !availableProducts.isEmpty());
+            } else {
+                model.addAttribute("products", List.of());
+                model.addAttribute("hasProducts", false);
+            }
+
+            model.addAttribute("selectedCategoryId", productForm.getCategoryId());
+            model.addAttribute("productForm", productForm);
+            model.addAttribute("productId", productForm.getProductId());
+
+            return "addProduct";
+        }
+
+        ProductEntity product = productService.getProductById(productForm.getProductId());
+
+        try {
+            productService.addProductToSeller(seller,product,productForm.getPrice(),productForm.getStock());
+            redirectAttributes.addFlashAttribute("okMessage", "Product Added sucessfully");
+        }
+        catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("warningMessage", e.getMessage());
+        }
+
+        return "redirect:/view/addProductView";
     }
 
     @GetMapping("/addOfferView")

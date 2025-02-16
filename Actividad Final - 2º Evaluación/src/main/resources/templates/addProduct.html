@@ -37,7 +37,7 @@
             <p th:text="${warningMessage}"></p>
         </div>
 
-        <form id="categoryForm" th:action="@{/view/addProduct}" method="get">
+        <form id="categoryForm" th:action="@{/view/addProductView}" method="get">
             <label for="categorySelect">Category:</label> <br>
             <select id="categorySelect" name="categoryId" onchange="document.getElementById('categoryForm').submit()" required>
                 <option value="" selected disabled>Choose a category</option>
@@ -49,7 +49,7 @@
             </select>
         </form>
 
-        <form id="addProductForm" th:action="@{/product/add}" method="post" th:object="${productForm}">
+        <form id="addProductForm" th:action="@{/view/addProduct}" method="post" th:object="${productForm}">
             <span th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}" class="error"></span>
             <input type="hidden" id="hiddenCategoryId" name="categoryId" th:value="${selectedCategoryId}">
             <label for="productSelect">Product:</label>

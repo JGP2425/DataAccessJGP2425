@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Offer</title>
+  <link rel="stylesheet" href="/api-rest/css/mainStyle.css">
+</head>
+<body>
+<div class="container">
+  <aside class="sidebar">
+    <form action="#" th:action="@{/view/index}" method="get">
+      <button type="submit">
+        <img src="/api-rest/img/avatar.png" alt="Logout" />
+      </button>
+    </form>
+    <form action="#" th:action="@{/view/addProduct}" method="get">
+      <button type="submit">
+        <img src="/api-rest/img/paquete-lupa.png" alt="Logout" />
+      </button>
+    </form>
+    <img src="/api-rest/img/paquete.png" alt="Add Offer">
+    <form action="#" th:action="@{/logout}" method="post">
+      <button type="submit">
+        <img src="/api-rest/img/abierto.png" alt="Logout" />
+      </button>
+    </form>
+  </aside>
+  <main class="content">
+    <h2>Add Offer</h2>
+    <div th:if="${okMessage}" class="message success">
+      <p th:text="${okMessage}"></p>
+    </div>
+
+    <div th:if="${warningMessage}" class="message warning">
+      <p th:text="${warningMessage}"></p>
+    </div>
+
+    <form id="productForm" th:action="@{/view/addOfferView}" method="get">
+      <label for="productSelect">Product:</label>
+      <br>
+      <select id="productSelect" name="productId" onchange="document.getElementById('productForm').submit()" required>
+        <option value="" disabled selected>Select a product</option>
+        <option th:each="product : ${products}"
+                th:value="${product.productId}"
+                th:selected="${product.productId == productIdSelected}"
+                th:text="${product.productName} + ' - ' + ${product.productPrice} + '€'">
+        </option>
+      </select>
+    </form>
+
+    <form id="addOfferForm" th:action="@{/view/addOffer}" method="post" th:object="${offerForm}">
+      <input type="hidden" name="productId" th:value="${productIdSelected}">
+      <label for="fromDate">From:</label>
+      <input type="date" id="fromDate" name="from" th:value="${offerForm.from}" required>
+      <span th:if="${#fields.hasErrors('from')}" th:errors="*{from}" class="error"></span>
+
+      <label for="toDate">To:</label>
+      <input type="date" id="toDate" name="to" th:value="${offerForm.to}" required>
+      <span th:if="${#fields.hasErrors('to')}" th:errors="*{to}" class="error"></span>
+
+      <label for="discount">Discount (%):</label>
+      <input type="number" id="discount" name="discount" min="0" step="1" th:value="${offerForm.discount}" required>
+      <span class="error" id="discountError"></span>
+      <span th:if="${#fields.hasErrors('discount')}" th:errors="*{discount}" class="error"></span>
+
+      <label>Price discounted:</label>
+      <input type="text" name="offerPrice" onchange="validateDiscountAndChangeOfferPrice()" th:value="${offerForm.offerPrice != null ? offerForm.offerPrice + '€' : ''}" readonly>
+      <span th:if="${#fields.hasErrors('offerPrice')}" th:errors="*{offerPrice}" class="error"></span>
+
+      <div class="buttons">
+        <button type="submit" id="addButton">Add</button>
+      </div>
+    </form>
+  </main>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      let fromDateInput = document.getElementById("fromDate");
+      let toDateInput = document.getElementById("toDate");
+      let discountInput = document.getElementById("discount");
+      let productSelect = document.getElementById("productSelect");
+      let offerPriceInput = document.querySelector("input[name='offerPrice']");
+      let discountError = document.getElementById("discountError");
+
+      let today = new Date().toISOString().split("T")[0];
+      fromDateInput.setAttribute("min", today);
+
+      fromDateInput.addEventListener("change", function () {
+          let fromDate = new Date(this.value);
+          let minToDate = new Date(fromDate);
+          minToDate.setDate(minToDate.getDate() + 1);
+          toDateInput.value = "";
+          toDateInput.setAttribute("min", minToDate.toISOString().split("T")[0]);
+      });
+
+      discountInput.addEventListener("input", validateDiscountAndChangeOfferPrice);
+      toDateInput.addEventListener("change", validateDiscountAndChangeOfferPrice);
+      productSelect.addEventListener("change", validateDiscountAndChangeOfferPrice);
+
+      function validateDiscountAndChangeOfferPrice() {
+          let fromDate = new Date(fromDateInput.value);
+          let toDate = new Date(toDateInput.value);
+          let discount = parseFloat(discountInput.value) || 0;
+          let selectedProduct = productSelect.options[productSelect.selectedIndex].text;
+          let originalPrice = parseFloat(selectedProduct.split(" - ")[1]) || 0;
+
+          if (isNaN(originalPrice) || originalPrice <= 0) {
+              discountError.textContent = "Select a product first.";
+              return;
+          }
+
+          if (discount < 0) {
+              discountError.textContent = "Discount cannot be negative.";
+              discountInput.value = 0;
+              discount = 0;
+          }
+
+          let duration = Math.floor((toDate - fromDate) / (1000 * 60 * 60 * 24));
+          let maxDiscount = getMaxDiscount(duration);
+
+          if (discount > maxDiscount) {
+              discountError.textContent = `Max discount for ${duration} days is ${maxDiscount}%`;
+              discountInput.value = maxDiscount;
+              discount = maxDiscount;
+          } else if (discount >= 0) {
+              discountError.textContent = "";
+          }
+
+          let discountedPrice = (originalPrice * (1 - discount / 100)).toFixed(2);
+          offerPriceInput.value = discountedPrice + "€";
+
+      }
+
+      function getMaxDiscount(days) {
+          if (days >= 30) return 10;
+          if (days >= 15) return 15;
+          if (days >= 7) return 20;
+          if (days >= 3) return 30;
+          if (days >= 1) return 50;
+          return 0;
+      }
+
+      document.getElementById("addOfferForm").addEventListener("submit", function () {
+      let offerPriceInput = document.querySelector("input[name='offerPrice']");
+      if (offerPriceInput) {
+          offerPriceInput.value = offerPriceInput.value.replace("€", "").trim();
+      }
+  });
+
+
+  });
+</script>
+
+
+
+</body>
+</html>

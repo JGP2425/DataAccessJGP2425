@@ -15,7 +15,11 @@
             </button>
         </form>
         <img src="/api-rest/img/paquete-lupa.png" alt="Add Product">
-        <img src="/api-rest/img/paquete.png" alt="Add Offer">
+        <form action="#" th:action="@{/view/addOfferView}" method="get">
+            <button type="submit">
+                <img src="/api-rest/img/paquete.png" alt="Add Offer">
+            </button>
+        </form>
         <form action="#" th:action="@{/logout}" method="post">
             <button type="submit">
                 <img src="/api-rest/img/abierto.png" alt="Logout" />

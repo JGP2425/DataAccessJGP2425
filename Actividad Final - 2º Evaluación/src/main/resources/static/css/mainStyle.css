@@ -162,6 +162,11 @@ input:invalid ~ .error {
     flex-direction: column;
 }
 
+#addOfferForm {
+    display: flex;
+    flex-direction: column;
+}
+
 label {
     font-weight: bold;
     margin-top: 10px;

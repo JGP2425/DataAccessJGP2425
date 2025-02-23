@@ -4,6 +4,8 @@ import com.jgp.OnlineMarket.OnlineMarket.models.dao.ISellerEntityDAO;
 import com.jgp.OnlineMarket.OnlineMarket.models.entities.SellerEntity;
 import com.jgp.OnlineMarket.OnlineMarket.utils.Utils;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -25,6 +27,12 @@ public class sellersService {
 
     public SellerEntity updateSeller(SellerEntity seller) {
         SellerEntity sellerBBDD = sellerDAO.findByCif(seller.getCif());
+        if (sellerBBDD == null)
+            throw new EntityNotFoundException("Seller not found with CIF: " + seller.getCif());
+
+        if (!seller.checkValidFields())
+            throw new IllegalArgumentException("Invalid seller data");
+
         sellerBBDD.setName(seller.getName());
         sellerBBDD.setBusinessName(seller.getBusinessName());
         sellerBBDD.setEmail(seller.getEmail());

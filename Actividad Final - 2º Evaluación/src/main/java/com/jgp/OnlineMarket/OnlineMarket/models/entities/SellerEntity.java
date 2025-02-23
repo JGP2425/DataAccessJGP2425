@@ -132,5 +132,31 @@ public class SellerEntity {
             return false;
     }
 
+    public boolean checkValidFields() {
+        if (this.cif == null || this.cif.isEmpty() || this.cif.length() > 20)
+            return false;
+
+        if (this.name == null || this.name.isEmpty() || this.name.length() > 100)
+            return false;
+
+        if (this.businessName != null && this.businessName.length() > 100)
+            return false;
+
+        if (this.phone != null && !this.phone.matches("^\\d{3}-\\d{3}-\\d{3}$"))
+            return false;
+
+        if (this.email != null && (this.email.length() > 90 || !this.email.matches("^[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z]{2,}$")))
+            return false;
+
+        if (this.plainPassword == null || this.plainPassword.isEmpty() || this.plainPassword.length() < 6 || this.plainPassword.length() > 50)
+            return false;
+
+        if (this.password == null || this.password.isEmpty() || this.password.length() < 6 || this.password.length() > 100)
+            return false;
+
+        return true;
+    }
+
+
 
 }

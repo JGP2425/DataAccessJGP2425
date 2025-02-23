@@ -2,6 +2,8 @@ package com.jgp.OnlineMarket.OnlineMarket.controllers;
 
 import com.jgp.OnlineMarket.OnlineMarket.models.entities.SellerEntity;
 import com.jgp.OnlineMarket.OnlineMarket.services.sellersService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.util.List;
 
+@Tag(name = "Sellers", description = "API for managing sellers")
+@RestController
 @Controller
 @RequestMapping("/sellers")
 public class sellersController {
@@ -38,11 +42,13 @@ public class sellersController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    @Operation(summary = "Retrieve all sellers", description = "Fetches a list of all registered sellers")
     @GetMapping
     public List<SellerEntity> findAllSeller() {
         return sellersService.findAllSellers();
     }
 
+    @Operation(summary = "Get seller by CIF", description = "Fetches seller details based on their CIF")
     @GetMapping("/cif/{cif}")
     public ResponseEntity<SellerEntity> getSellerByCif(@PathVariable String cif) {
         SellerEntity seller = sellersService.findSellerByCif(cif);
@@ -56,6 +62,7 @@ public class sellersController {
         }
     }
 
+    @Operation(summary = "Update a seller", description = "Updates seller data in the database")
     @PostMapping("/updateSeller")
     public String updateSeller(@ModelAttribute SellerEntity seller) {
         sellersService.updateSeller(seller);

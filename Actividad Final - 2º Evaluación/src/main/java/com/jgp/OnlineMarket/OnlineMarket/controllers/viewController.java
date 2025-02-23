@@ -9,6 +9,8 @@ import com.jgp.OnlineMarket.OnlineMarket.models.dto.ProductForm;
 import com.jgp.OnlineMarket.OnlineMarket.models.entities.SellerProductEntity;
 import com.jgp.OnlineMarket.OnlineMarket.services.categoryService;
 import com.jgp.OnlineMarket.OnlineMarket.services.productService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,7 @@ import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 
+@Tag(name = "View", description = "Endpoints for managing seller views and operations")
 @Controller
 @RequestMapping("/view")
 public class viewController {
@@ -37,6 +40,7 @@ public class viewController {
         this.productService = productService;
     }
 
+    @Operation(summary = "Seller dashboard", description = "Displays the seller's dashboard with relevant information.")
     @GetMapping("/index")
     public String index(@AuthenticationPrincipal User user, Model model) {
         SellerEntity seller = sellersService.findSellerByCif(user.getUsername());
@@ -45,6 +49,7 @@ public class viewController {
         return "index";
     }
 
+    @Operation(summary = "Update seller", description = "Updates the seller's information in the database.")
     @PostMapping("/updateSeller")
     public String updateSeller(@Valid @ModelAttribute("seller") SellerEntity seller, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model, @AuthenticationPrincipal User user) {
         if (bindingResult.hasErrors()) {
@@ -78,6 +83,7 @@ public class viewController {
         return "redirect:/view/index";
     }
 
+    @Operation(summary = "Add product view", description = "Displays the page to add a new product for the seller.")
     @GetMapping("/addProductView")
     public String addProductView(@RequestParam(value = "categoryId", required = false) Integer categoryId, @AuthenticationPrincipal User user, Model model) {
         SellerEntity seller = sellersService.findSellerByCif(user.getUsername());
@@ -112,6 +118,7 @@ public class viewController {
         return "addProduct";
     }
 
+    @Operation(summary = "Add product", description = "Adds a new product to the seller's inventory.")
     @PostMapping("/addProduct")
     public String addProductToSeller(@ModelAttribute("productForm") @Valid ProductForm productForm,
                                      BindingResult bindingResult, RedirectAttributes redirectAttributes,
@@ -158,6 +165,7 @@ public class viewController {
         return "redirect:/view/addProductView";
     }
 
+    @Operation(summary = "Add offer view", description = "Displays the page to add a special offer for a product.")
     @GetMapping("/addOfferView")
     public String addOfferView(@RequestParam(value = "productId", required = false) Integer productId, @AuthenticationPrincipal User user, Model model) {
         SellerEntity seller = sellersService.findSellerByCif(user.getUsername());
@@ -187,6 +195,7 @@ public class viewController {
         return "addOffer";
     }
 
+    @Operation(summary = "Add offer", description = "Adds a discount offer to a seller's product.")
     @PostMapping("/addOffer")
     public String addOfferToSeller(@ModelAttribute("offerForm") @Valid OfferForm offerForm, BindingResult bindingResult,
                                    RedirectAttributes redirectAttributes, @AuthenticationPrincipal User user, Model model)

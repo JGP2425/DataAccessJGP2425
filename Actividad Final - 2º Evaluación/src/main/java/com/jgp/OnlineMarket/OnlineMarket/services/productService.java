@@ -39,19 +39,41 @@ public class productService {
         return  productDAO.findById(productId).orElse(null);
     }
 
-    public List<ProductDTO> getProductsBySeller(SellerEntity seller) {
-        List<SellerProductEntity> sellerProduct = sellerProductDAO.getSellerProductsBySeller(seller);
+    public List<ProductDTO> getProductsBySeller(SellerEntity seller, boolean withOffer) {
+        List<SellerProductEntity> sellerProductList = sellerProductDAO.getSellerProductsBySeller(seller);
         List<ProductDTO> productDTOList = new ArrayList<>();
 
-        for (int i = 0; sellerProduct.size() > i; i++) {
-            ProductEntity product = sellerProduct.get(i).getProduct();
-            ProductDTO productDTO = new ProductDTO();
+        if (!withOffer) {
+            for (int i = 0; sellerProductList.size() > i; i++) {
+                ProductEntity product = sellerProductList.get(i).getProduct();
+                ProductDTO productDTO = new ProductDTO();
 
-            productDTO.setProductId(product.getProductId());
-            productDTO.setProductName(product.getProductName());
-            productDTO.setProductPrice(sellerProduct.get(i).getPrice());
+                productDTO.setProductId(product.getProductId());
+                productDTO.setProductName(product.getProductName());
+                productDTO.setProductPrice(sellerProductList.get(i).getPrice());
+                productDTO.setCategoryName(product.getCategory().getCategoryName());
 
-            productDTOList.add(productDTO);
+                productDTOList.add(productDTO);
+            }
+        }
+        else {
+            LocalDate today = LocalDate.now();
+            for (int i = 0; i < sellerProductList.size(); i++) {
+                SellerProductEntity sellerProduct = sellerProductList.get(i);
+                if (sellerProduct.getOfferStartDate() != null && sellerProduct.getOfferEndDate() != null) {
+                    if (today.isAfter(sellerProduct.getOfferStartDate()) || today.isEqual(sellerProduct.getOfferStartDate())) {
+                        ProductEntity product = sellerProductList.get(i).getProduct();
+                        ProductDTO productDTO = new ProductDTO();
+
+                        productDTO.setProductId(product.getProductId());
+                        productDTO.setProductName(product.getProductName());
+                        productDTO.setProductPrice(sellerProductList.get(i).getOfferPrice());
+                        productDTO.setCategoryName(product.getCategory().getCategoryName());
+
+                        productDTOList.add(productDTO);
+                    }
+                }
+            }
         }
 
         return productDTOList;
@@ -59,6 +81,10 @@ public class productService {
 
     public SellerProductEntity getOfferByProduct(ProductEntity product, SellerEntity seller) {
         return sellerProductDAO.getSellerProductByProductAndSeller(product, seller);
+    }
+
+    public List<SellerProductEntity> getSellersByProduct(ProductEntity product) {
+        return sellerProductDAO.getSellersByProduct(product);
     }
 
     public void addOffer(SellerProductEntity offer) {

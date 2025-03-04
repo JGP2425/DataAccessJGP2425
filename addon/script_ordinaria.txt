@@ -1,0 +1,6 @@
+ALTER TABLE SELLERS
+	ADD COLUMN last_login TIMESTAMP;
+
+INSERT INTO public.sellers(
+	seller_id, cif, name, business_name, plain_password, password)
+	VALUES (0, 'Z00000000', 'admin', 'admin', 'admin', '21232F297A57A5A743894A0E4A801FC3');

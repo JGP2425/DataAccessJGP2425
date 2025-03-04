@@ -14,6 +14,7 @@ import java.util.List;
 @Repository
 public interface ISellerProductEntityDAO extends CrudRepository<SellerProductEntity, Integer> {
     List<SellerProductEntity> getSellerProductsBySeller(SellerEntity seller);
+    List<SellerProductEntity> getSellersByProduct(ProductEntity product);
     SellerProductEntity getSellerProductByProductAndSeller(ProductEntity product, SellerEntity seller);
     @Query("SELECT s FROM SellerProductEntity s WHERE s.seller = :seller " +
             "AND ((s.offerStartDate BETWEEN :startDate AND :endDate) " +

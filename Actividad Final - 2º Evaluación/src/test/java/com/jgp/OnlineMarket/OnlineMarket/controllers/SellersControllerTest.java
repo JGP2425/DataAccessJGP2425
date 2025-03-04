@@ -2,6 +2,7 @@ package com.jgp.OnlineMarket.OnlineMarket.controllers;
 
 import com.jgp.OnlineMarket.OnlineMarket.models.entities.SellerEntity;
 import com.jgp.OnlineMarket.OnlineMarket.services.sellersService;
+import com.jgp.OnlineMarket.OnlineMarket.services.productService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,12 +30,15 @@ class SellersControllerTest {
     @Mock
     private sellersService sellersService;
 
+    @Mock
+    private productService productService;
+
     @InjectMocks
     private sellersController sellersController;
 
     @BeforeEach
     void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new sellersController(sellersService)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new sellersController(sellersService, productService)).build();
     }
     @Test
     void testGetSellerByCifOK() throws Exception {

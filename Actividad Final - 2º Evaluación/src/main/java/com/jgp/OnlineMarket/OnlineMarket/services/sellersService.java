@@ -25,6 +25,7 @@ public class sellersService {
         return sellerDAO.findByCif(cif);
     }
 
+
     public SellerEntity updateSeller(SellerEntity seller) {
         SellerEntity sellerBBDD = sellerDAO.findByCif(seller.getCif());
         if (sellerBBDD == null)

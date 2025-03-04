@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <link rel="stylesheet" href="/css/mainStyle.css">
+</head>
+<body>
+<div class="container">
+    <aside class="sidebar">
+        <form action="#" th:action="@{/view/index}" method="get">
+            <button type="submit">
+                <img src="/img/avatar.png" alt="Logout" />
+            </button>
+        </form>
+        <img src="/img/paquete-lupa.png" alt="Add Product">
+        <form action="#" th:action="@{/view/addOfferView}" method="get">
+            <button type="submit">
+                <img src="/img/paquete.png" alt="Add Offer">
+            </button>
+        </form>
+        <form action="#" th:action="@{/view/showProductsView}" method="get">
+            <button type="submit">
+                <img src="/img/paquete.png" alt="Product List">
+            </button>
+        </form>
+        <form action="#" th:action="@{/logout}" method="post">
+            <button type="submit">
+                <img src="/img/abierto.png" alt="Logout" />
+            </button>
+        </form>
+    </aside>
+    <main class="contentProducts">
+        <h2>Product List</h2>
+        <table>
+            <thead>
+            <tr class="showProductsTr">
+                <th class="start">Name</th>
+                <th>Offer Price</th>
+                <th class ="end">Category</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="showProductsTr" th:each="product : ${products}">
+                <td class="start" th:text="${product.productName}"></td>
+                <td th:text="${product.productPrice}"></td>
+                <td class ="end" th:text="${product.categoryName}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <form id="showOfferButton"  action="#" th:action="@{/view/showProductsView}" method="get">
+            <button type="submit">
+                Show all products
+            </button>
+        </form>
+
+    </main>
+</div>
+</body>
+</html>

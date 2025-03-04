@@ -79,6 +79,17 @@ body {
     margin: auto;
 }
 
+.contentProducts {
+    flex-grow: 1;
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: auto;
+}
+
+
 h2 {
     text-align: center;
 }
@@ -141,6 +152,7 @@ input:invalid ~ .error {
     display: block;
 }
 
+
 .message {
     padding: 10px;
     border-radius: 5px;
@@ -201,4 +213,39 @@ select, input[type="number"] {
 
 #addButton:hover {
     transform: scale(1.1);
+}
+
+table {
+    text-align: center;
+    flex-grow: 1;
+    background: white;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: auto;
+}
+
+.showProductsTr {
+    padding-right: 2%;
+    padding-left: 2%;
+    margin-top:10%;
+    margin-bottom: 10%;
+    border-bottom: 40px black;
+    border-bottom-style: solid;
+}
+
+#showOfferButton{
+    display: flex;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    flex-direction: column;
+}
+
+.start {
+    text-align: left;
+}
+
+.end {
+    text-align: end;
 }

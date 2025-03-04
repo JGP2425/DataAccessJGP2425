@@ -170,7 +170,7 @@ public class viewController {
     public String addOfferView(@RequestParam(value = "productId", required = false) Integer productId, @AuthenticationPrincipal User user, Model model) {
         SellerEntity seller = sellersService.findSellerByCif(user.getUsername());
 
-        List<ProductDTO> products = productService.getProductsBySeller(seller);
+        List<ProductDTO> products = productService.getProductsBySeller(seller, false);
         products.sort(Comparator.comparing(ProductDTO::getProductName));
 
         OfferForm offerForm = new OfferForm();
@@ -204,7 +204,7 @@ public class viewController {
 
         if (bindingResult.hasErrors()) {
 
-            List<ProductDTO> products = productService.getProductsBySeller(seller);
+            List<ProductDTO> products = productService.getProductsBySeller(seller, false);
             products.sort(Comparator.comparing(ProductDTO::getProductName));
 
             model.addAttribute("products", products);
@@ -234,5 +234,32 @@ public class viewController {
         }
 
         return "redirect:/view/addOfferView";
+    }
+
+    @Operation(summary = "Show Products view", description = "Displays the page to show the products of the seller.")
+    @GetMapping("/showProductsView")
+    public String showProductsView(@AuthenticationPrincipal User user, Model model) {
+        SellerEntity seller = sellersService.findSellerByCif(user.getUsername());
+
+        List<ProductDTO> products = productService.getProductsBySeller(seller, false);
+        products.sort(Comparator.comparing(ProductDTO::getProductName));
+
+        model.addAttribute("products", products);
+
+        return "showProducts";
+    }
+
+    @Operation(summary = "Show Products view", description = "Displays the page to show the products of the seller.")
+    @GetMapping("/showProductsWithOfferView")
+    public String showProductsWithOfferView(@AuthenticationPrincipal User user, Model model) {
+        SellerEntity seller = sellersService.findSellerByCif(user.getUsername());
+
+        List<ProductDTO> products = productService.getProductsBySeller(seller,true);
+        products.sort(Comparator.comparing(ProductDTO::getProductName));
+
+
+        model.addAttribute("products", products);
+
+        return "showProductsWithOffer";
     }
 }
